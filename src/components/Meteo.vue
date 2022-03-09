@@ -14,6 +14,7 @@
       />
       <label for="position" class="label2">Or push button</label>
       <button v-on:click="goMeteoRandom">Random</button>
+      <h1 v-if="error">Vue is awesome!</h1>
     </div>
     <div class="w-75 m-auto" v-if="temps">
       <h3 class="text-center mb-3" v-if="temps.name !== ''">Location : <b>{{ temps.name }}</b>,<b>{{ temps.sys.country}}</b></h3>
@@ -40,8 +41,10 @@ export default {
       apiKey: "8f59285bfd7d9c55b4ed9b2240772491",
       temps: undefined,
       urlApi: "https://api.openweathermap.org/data/2.5/weather?",
-      lat: 90,
-      lon: 180,
+      lat: 0,
+      lon: 0,
+      error: false,
+      cache: []
     };
   },
   
@@ -52,17 +55,20 @@ export default {
         `${this.urlApi}q=${this.requete}&appid=${this.apiKey}&lang=en&units=metric`
       ).then((response) => {
         this.temps = response.data;
-        console.log(this.temps)
+        //console.log(this.temps)   
+      }).catch(
+          error => {
+            console.log(error);
+            this.error = !this.error            
       });
       this.requete = "";
+      this.error = false;
       }
     },
 
     goMeteoRandom() {
       this.lat = Math.floor(Math.random() * 90);
       this.lon = Math.floor(Math.random() * 180);
-      console.log(this.lat)
-      console.log(this.lon)
       Axios.get(
         `${this.urlApi}lat=${this.lat}&lon=${this.lon}&appid=${this.apiKey}&lang=en&units=metric`
       ).then((response) => {
