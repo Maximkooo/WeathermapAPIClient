@@ -1,3 +1,4 @@
+
 <template>
   <div class="container">
     <h1 class="my-4 text-center ">Weathermap API Client</h1>
@@ -15,7 +16,8 @@
       <button v-on:click="goMeteoRandom">Random</button>
     </div>
     <div class="w-75 m-auto" v-if="temps">
-      <h3 class="text-center mb-3" v-if="temps.name !== ''">Location : <b>{{ temps.name }}</b></h3>
+      <h3 class="text-center mb-3" v-if="temps.name !== ''">Location : <b>{{ temps.name }}</b>,<b>{{ temps.sys.country}}</b></h3>
+      <h3 class="text-center mb-3">Lat. : <b>{{ temps.coord.lat }}</b> Lon. : <b>{{ temps.coord.lon }}</b></h3>  
       <div class="card text-center p-5" style="border-radius:100px">
         <p class="texte-affichage">
           Temperature : <b>{{ temps.main.temp.toFixed() }}°</b>
@@ -30,6 +32,7 @@
 
 <script>
 import Axios from "axios";
+
 export default {
   data() {
     return {
@@ -45,18 +48,17 @@ export default {
   methods: {
     goMeteo(e) {
       if (e.key === "Enter") {
-      Axios.get(
+      Axios.get(   
         `${this.urlApi}q=${this.requete}&appid=${this.apiKey}&lang=en&units=metric`
       ).then((response) => {
         this.temps = response.data;
-
+        console.log(this.temps)
       });
       this.requete = "";
       }
     },
-    goMeteoRandom() {
 
-        
+    goMeteoRandom() {
       this.lat = Math.floor(Math.random() * 90);
       this.lon = Math.floor(Math.random() * 180);
       console.log(this.lat)
@@ -65,11 +67,8 @@ export default {
         `${this.urlApi}lat=${this.lat}&lon=${this.lon}&appid=${this.apiKey}&lang=en&units=metric`
       ).then((response) => {
         this.temps = response.data;
-         
-           
       });
       this.requete = "";
-      
     },
   },
 };
