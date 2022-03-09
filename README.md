@@ -1,4 +1,4 @@
-#Weathermap API Client
+# WeathermapAPIClient
 
 client for the Open Weather Map API
 
