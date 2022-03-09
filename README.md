@@ -1,4 +1,4 @@
-Weathermap API Client
+#Weathermap API Client
 
 Provide an overview of which points you would improve if you had more time to work on the project - 
 
