@@ -12,7 +12,8 @@
         v-on:keypress="goMeteo"
       />
       <label for="position" class="label2">Or push button</label>
-      <button v-on:click="goMeteoRandom">Random</button>
+      <button v-on:click="goMeteoRandom" @click="increment()">Random</button>
+      <p>You pressed the button <strong>{{this.count}}</strong> times </p>
       <div class="area" v-if="error">⚠ wrong input ⚠</div>
     </div>
     <div class="w-75 m-auto" v-if="temps">
@@ -33,6 +34,7 @@
 <script>
 import Axios from "axios";
 
+
 export default {
   data() {
     return {
@@ -44,10 +46,15 @@ export default {
       lon: 0,
       error: false,
       cache: {},
+      count: 0
+
     };
   },
   
   methods: {
+    increment() {
+      this.count++
+    },
     catchMeteo(){
       this.temps.name = this.cache[this.requete][0];
       this.temps.sys.country = this.cache[this.requete][1];
