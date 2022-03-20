@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Meteo></Meteo>
+
   </div>
 </template>
 

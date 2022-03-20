@@ -12,9 +12,11 @@
         v-on:keypress="goMeteo"
       />
       <label for="position" class="label2">Or push button</label>
-      <button v-on:click="goMeteoRandom" @click="increment()">Random</button>
-      <p>You pressed the button <strong>{{this.count}}</strong> times </p>
+      <button v-on:click="goMeteoRandom" @click="increment">Random</button>
+      <p>Clicked "Random" <strong>{{ $store.state.count }}</strong> times!</p>
       <div class="area" v-if="error">⚠ wrong input ⚠</div>
+      
+
     </div>
     <div class="w-75 m-auto" v-if="temps">
       <h3 class="text-center mb-3" v-if="temps.name !== ''">Location : <b>{{ temps.name }}</b>,<b>{{ temps.sys.country }}</b></h3>
@@ -33,8 +35,7 @@
 
 <script>
 import Axios from "axios";
-
-
+import { mapActions } from 'vuex';
 export default {
   data() {
     return {
@@ -46,15 +47,15 @@ export default {
       lon: 0,
       error: false,
       cache: {},
-      count: 0
-
     };
   },
   
+  
   methods: {
-    increment() {
-      this.count++
-    },
+    ...mapActions([
+    'increment'
+  ]),
+
     catchMeteo(){
       this.temps.name = this.cache[this.requete][0];
       this.temps.sys.country = this.cache[this.requete][1];
@@ -107,6 +108,7 @@ export default {
       this.error = false;
     },
   },
+  
 };
 </script>
 
@@ -120,6 +122,8 @@ button{
   background-color: white;
   border: black;
   display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .label2{
   margin-top: 20px;
