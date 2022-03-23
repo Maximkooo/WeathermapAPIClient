@@ -11,11 +11,30 @@
         v-model="requete"
         v-on:keypress="goMeteo"
       />
+
+      
       <label for="position" class="label2">Or push button</label>
-      <button v-on:click="goMeteoRandom" @click="increment">Random</button>
-      <p>Clicked "Random" <strong>{{ $store.state.count }}</strong> times!</p>
+      <button v-on:click="goMeteoRandom">Random</button>
       <div class="area" v-if="error">⚠ wrong input ⚠</div>
       
+
+
+
+      <div class="w-75 m-auto" v-bind="allCity">
+      <h3 class="text-center mb-3" >Location : <b>{{ allCity.name }}</b>,<b>{{ allCity.sys.country }}</b></h3>
+      <h3 class="text-center mb-3">Lat. : <b>{{ allCity.coord.lat }}</b> Lon. : <b>{{ allCity.coord.lon }}</b></h3>  
+      <div class="card text-center p-5" style="border-radius:100px">
+        <p class="texte-affichage ">
+          Temperature : <b>{{ Math.round(allCity.main.temp) }}°</b>
+        </p>
+        <p class="texte-affichage">
+          Description : <b>{{ allCity.weather[0].description }}</b>
+        </p>
+      </div>
+    </div>
+
+
+
 
     </div>
     <div class="w-75 m-auto" v-if="temps">
@@ -35,7 +54,7 @@
 
 <script>
 import Axios from "axios";
-import { mapActions } from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 export default {
   data() {
     return {
@@ -46,15 +65,15 @@ export default {
       lat: 0,
       lon: 0,
       error: false,
-      cache: {},
+      cache: {}
     };
   },
   
+  computed: mapGetters(['allCity']),
   
   methods: {
-    ...mapActions([
-    'increment'
-  ]),
+    ...mapActions(['getPosts']),
+    ...mapMutations(['GET_CITY']),
 
     catchMeteo(){
       this.temps.name = this.cache[this.requete][0];
@@ -76,9 +95,10 @@ export default {
           `${this.urlApi}q=${this.requete}&appid=${this.apiKey}&lang=en&units=metric`
         ).then((response) => {
           this.temps = response.data;
+          this.test = response.data;
           this.cache[this.requete.toLowerCase()] = [this.temps.name, this.temps.sys.country, 
           this.temps.weather[0].description, this.temps.main.temp.toFixed(), this.temps.coord.lat, this.temps.coord.lon]; 
-
+          console.log(this.test)
           this.requete = "";
         }).catch(
             error => {
@@ -108,6 +128,9 @@ export default {
       this.error = false;
     },
   },
+  mounted(){
+    this.getPosts();
+  },
   
 };
 </script>
@@ -124,6 +147,11 @@ button{
   display: block;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.buttonSearch{
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #7B96B8;
 }
 .label2{
   margin-top: 20px;
