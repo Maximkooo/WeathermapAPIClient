@@ -11,7 +11,12 @@
         v-model="requete"
         v-on:keypress="goMeteo"
       />
+     
 
+        <form @submit.prevent="addItemToCart">
+            <input type="text" v-model="requete" required>
+            <button type="submit">Add to cart</button>
+        </form>
       
       <label for="position" class="label2">Or push button</label>
       <button v-on:click="goMeteoRandom">Random</button>
@@ -21,7 +26,7 @@
 
 
       <div class="w-75 m-auto" v-bind="allCity">
-      <h3 class="text-center mb-3" >Location : <b>{{ allCity.name }}</b>,<b>{{ allCity.sys.country }}</b></h3>
+      <h3 class="text-center mb-3" >Location : <b>{{ allCity.name }}</b>, <b>{{ allCity.sys.country }}</b></h3>
       <h3 class="text-center mb-3">Lat. : <b>{{ allCity.coord.lat }}</b> Lon. : <b>{{ allCity.coord.lon }}</b></h3>  
       <div class="card text-center p-5" style="border-radius:100px">
         <p class="texte-affichage ">
@@ -54,7 +59,7 @@
 
 <script>
 import Axios from "axios";
-import {mapGetters, mapActions, mapMutations} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   data() {
     return {
@@ -73,7 +78,13 @@ export default {
   
   methods: {
     ...mapActions(['getPosts']),
-    ...mapMutations(['GET_CITY']),
+
+    addItemToCart() {
+          if(this.requete !== '') {
+              this.$store.commit('GET_CITY', this.requete),
+              this.$store.dispatch('getPosts')
+          }
+      },
 
     catchMeteo(){
       this.temps.name = this.cache[this.requete][0];
