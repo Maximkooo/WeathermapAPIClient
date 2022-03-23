@@ -1,45 +1,37 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import axios from 'axios';
+import Vue from 'vue'
+import Vuex from 'vuex'
+import Axios from "axios";
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-  	weather: {
-      id: null,
-      main: {
-        temp: null,
-      },
-    },
+    city: 'berlin',
+    posts: undefined
   },
   mutations: {
-  	SET_WEATHER(state, payload) {
-  		state.weather = payload;
-  	},
+    SET_POSTS(state, posts) {
+      state.posts = posts
+      console.log(state.city)
+  },
+    GET_CITY(state, city){
+      state.city = city
+      console.log(state.city)
+    }
   },
   actions: {
-  	loadWeather({ commit }, city) {
-      return new Promise((resolve, reject) => {
-        axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=54c6208e65525722577789e191782281`)
-  			.then((response) => {
-            commit('SET_WEATHER', response.data);
-            console.log('DATA', response.data);
-            resolve(response.data);
-          })
-          .catch((error) => {
-            reject(error);
-          });
+     getPosts({ commit }) {
+      Axios.get('https://api.openweathermap.org/data/2.5/weather?q=' + this.state.city + '&appid=8f59285bfd7d9c55b4ed9b2240772491&lang=en&units=metric')
+          .then(response => {
+              commit('SET_POSTS', response.data)
+      }).catch((error) => {
+        alert(error);
       });
-  	},
-
-    loadByLocation({ commit, dispatch }, position) {
-      axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&limit=20&appid=54c6208e65525722577789e191782281`)
-        .then((res) => {
-          dispatch('loadWeather', res.data[0].name);
-        });
-  	},
-  },
-  modules: {
-  },
+  } 
+    },
+  getters: {
+    allCity(state){
+      return state.posts
+    }
+  }
 });
