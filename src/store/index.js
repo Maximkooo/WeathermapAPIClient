@@ -12,11 +12,10 @@ export default new Vuex.Store({
   mutations: {
     SET_POSTS(state, posts) {
       state.posts = posts
-      console.log(state.city)
   },
     GET_CITY(state, city){
       state.city = city
-      console.log(state.city)
+      console.log(city)
     }
   },
   actions: {
@@ -25,10 +24,12 @@ export default new Vuex.Store({
           .then(response => {
               commit('SET_POSTS', response.data)
       }).catch((error) => {
+        location.reload()
         alert(error);
       });
-  } 
-    },
+    } 
+  },
+  
   getters: {
     allCity(state){
       return state.posts
