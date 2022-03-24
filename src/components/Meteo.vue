@@ -37,13 +37,6 @@ export default {
   data() {
     return {
       requete: "",
-      apiKey: "8f59285bfd7d9c55b4ed9b2240772491",
-      temps: undefined,
-      urlApi: "https://api.openweathermap.org/data/2.5/weather?",
-      lat: 0,
-      lon: 0,
-      error: false,
-      cache: {}
     };
   },
   
