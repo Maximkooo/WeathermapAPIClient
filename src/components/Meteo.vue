@@ -3,27 +3,17 @@
     <h1 class="my-4 text-center ">Weathermap API Client</h1>
     <div class="form-groupe mb-5">
       <label for="position">Enter a city</label>
-      <input
-        type="text"
-        name="position"
-        id="position"
-        class="form-control"
-        v-model="requete"
-        v-on:keypress="goMeteo"
-      />
      
-
         <form @submit.prevent="addItemToCart">
-            <input type="text" v-model="requete" required>
+            <input 
+              type="text"
+              v-model="requete" 
+              name="position"
+              id="position"
+              class="form-control" 
+              required>
             <button type="submit">Add to cart</button>
         </form>
-      
-      <label for="position" class="label2">Or push button</label>
-      <button v-on:click="goMeteoRandom">Random</button>
-      <div class="area" v-if="error">⚠ wrong input ⚠</div>
-      
-
-
 
       <div class="w-75 m-auto" v-bind="allCity">
       <h3 class="text-center mb-3" >Location : <b>{{ allCity.name }}</b>, <b>{{ allCity.sys.country }}</b></h3>
@@ -37,28 +27,11 @@
         </p>
       </div>
     </div>
-
-
-
-
-    </div>
-    <div class="w-75 m-auto" v-if="temps">
-      <h3 class="text-center mb-3" v-if="temps.name !== ''">Location : <b>{{ temps.name }}</b>,<b>{{ temps.sys.country }}</b></h3>
-      <h3 class="text-center mb-3">Lat. : <b>{{ temps.coord.lat }}</b> Lon. : <b>{{ temps.coord.lon }}</b></h3>  
-      <div class="card text-center p-5" style="border-radius:100px">
-        <p class="texte-affichage ">
-          Temperature : <b>{{ Math.round(temps.main.temp) }}°</b>
-        </p>
-        <p class="texte-affichage">
-          Description : <b>{{ temps.weather[0].description }}</b>
-        </p>
-      </div>
     </div>
   </div>
 </template>
-
 <script>
-import Axios from "axios";
+
 import {mapGetters, mapActions} from 'vuex'
 export default {
   data() {
@@ -75,69 +48,18 @@ export default {
   },
   
   computed: mapGetters(['allCity']),
+
   
   methods: {
     ...mapActions(['getPosts']),
+    
 
     addItemToCart() {
           if(this.requete !== '') {
-              this.$store.commit('GET_CITY', this.requete),
-              this.$store.dispatch('getPosts')
+              this.$store.dispatch('getPosts', this.requete )
+              this.requete = ''
           }
       },
-
-    catchMeteo(){
-      this.temps.name = this.cache[this.requete][0];
-      this.temps.sys.country = this.cache[this.requete][1];
-      this.temps.weather[0].description = this.cache[this.requete][2];
-      this.temps.main.temp = this.cache[this.requete][3];
-      this.temps.coord.lat = this.cache[this.requete][4];
-      this.temps.coord.lon = this.cache[this.requete][5];
-
-      this.requete = "";
-      this.error = false;
-    },
-
-    goMeteo(e) {
-      
-      if (e.key === "Enter" && typeof this.cache[this.requete] === "undefined") {
-
-        Axios.get(   
-          `${this.urlApi}q=${this.requete}&appid=${this.apiKey}&lang=en&units=metric`
-        ).then((response) => {
-          this.temps = response.data;
-          this.test = response.data;
-          this.cache[this.requete.toLowerCase()] = [this.temps.name, this.temps.sys.country, 
-          this.temps.weather[0].description, this.temps.main.temp.toFixed(), this.temps.coord.lat, this.temps.coord.lon]; 
-          console.log(this.test)
-          this.requete = "";
-        }).catch(
-            error => {
-              console.log(error);
-              this.error = !this.error      
-              this.requete = "";   
-        });
-        this.error = false;
-        }
-
-      if (e.key === "Enter" && typeof this.cache[this.requete] !== "undefined"){
-        this.catchMeteo();
-      }   
-    },
-
-    goMeteoRandom() {
-      this.lat = Math.floor(Math.random() * 90);
-      this.lon = Math.floor(Math.random() * 180);
-      Axios.get(
-        `${this.urlApi}lat=${this.lat}&lon=${this.lon}&appid=${this.apiKey}&lang=en&units=metric`
-      ).then((response) => {
-        this.temps = response.data;
-        this.cache[this.requete.toLowerCase()] = [this.temps.name, this.temps.sys.country, 
-        this.temps.weather[0].description, this.temps.main.temp.toFixed(), this.temps.coord.lat, this.temps.coord.lon]; 
-        this.requete = "";
-      });
-      this.error = false;
-    },
   },
   mounted(){
     this.getPosts();
@@ -145,6 +67,8 @@ export default {
   
 };
 </script>
+
+
 
 <style scoped>
 .texte-affichage {
