@@ -15,21 +15,23 @@ export default new Vuex.Store({
   },
     GET_CITY(state, city){
       state.city = city
-      console.log(city)
+      //console.log(city)
     }
   },
   actions: {
-     getPosts({ commit }) {
+     getPosts({ commit }, cityName='berlin') {
+      commit('GET_CITY', cityName)
+      //console.log(this.state.city)
       Axios.get('https://api.openweathermap.org/data/2.5/weather?q=' + this.state.city + '&appid=8f59285bfd7d9c55b4ed9b2240772491&lang=en&units=metric')
           .then(response => {
-              commit('SET_POSTS', response.data)
+              commit('SET_POSTS', response.data)         
       }).catch((error) => {
         location.reload()
         alert(error);
       });
     } 
   },
-  
+
   getters: {
     allCity(state){
       return state.posts
